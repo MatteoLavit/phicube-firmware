@@ -55,7 +55,7 @@ class GIM6010Driver
       SOFTWARE_ERROR = 0b00000001
     };
 
-    GIM6010Driver(uint32_t id, CANManager &manager);
+    GIM6010Driver(const uint32_t id, CANManager &manager);
 
     bool Init();
     
@@ -151,7 +151,6 @@ class GIM6010Driver
   private:
 
     uint32_t canID;
-    const int cpr = 16384;
     CANManager &canManager;
 
     void OnReadVersions(const CanMsg& msg);

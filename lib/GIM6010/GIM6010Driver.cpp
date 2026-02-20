@@ -4,13 +4,18 @@
 // ---------------------- PUBLIC -----------------------
 // -----------------------------------------------------
 
-GIM6010Driver::GIM6010Driver(uint32_t id, CANManager& manager)
-  : canManager(manager),
-    canID(id) {
+
+GIM6010Driver::GIM6010Driver(const uint32_t id, CANManager& manager)
+  : canID(id),
+    canManager(manager)
+    
+{
   currError = GIM6010Error::NO_ERROR;
 }
 
-bool GIM6010Driver::Init() {
+
+bool GIM6010Driver::Init()
+{
   if (!ReadVersions()) return false;
   if (!ReadInfos()) return false;
   if (!ReadPosKp()) return false;
@@ -21,7 +26,9 @@ bool GIM6010Driver::Init() {
   return true;
 }
 
-bool GIM6010Driver::ReadVersions() {
+
+bool GIM6010Driver::ReadVersions()
+{
   uint8_t data[] = {GIM6010Command::READ_VERSIONS};
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadVersionsCB)) return false;
@@ -29,23 +36,33 @@ bool GIM6010Driver::ReadVersions() {
   return true;
 }
 
-int GIM6010Driver::GetBootVersion() {
+
+int GIM6010Driver::GetBootVersion()
+{
   return bootVersion;
 }
 
-int GIM6010Driver::GetSWVersion() {
+
+int GIM6010Driver::GetSWVersion()
+{
   return SWVersion;
 }
 
-int GIM6010Driver::GetHWVersion() {
+
+int GIM6010Driver::GetHWVersion()
+{
   return HWVersion;
 }
 
-int GIM6010Driver::GetCANVersion() {
+
+int GIM6010Driver::GetCANVersion()
+{
   return CANVersion;
 }
 
-bool GIM6010Driver::ReadInfos() {
+
+bool GIM6010Driver::ReadInfos()
+{
   uint8_t data[] = { GIM6010Command::READ_INFOS };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadInfosCB)) return false;
@@ -53,19 +70,27 @@ bool GIM6010Driver::ReadInfos() {
   return true;
 }
 
-int GIM6010Driver::GetPolePairs() {
+
+int GIM6010Driver::GetPolePairs()
+{
   return polePairs;
 }
 
-int GIM6010Driver::GetReductionRatio() {
+
+int GIM6010Driver::GetReductionRatio()
+{
   return reductionRatio;
 }
 
-float GIM6010Driver::GetTorqueConstant() {
+
+float GIM6010Driver::GetTorqueConstant()
+{
   return torqueConstant;
 }
 
-bool GIM6010Driver::ReadStatus() {
+
+bool GIM6010Driver::ReadStatus()
+{
   uint8_t data[] = { GIM6010Command::READ_STATUS };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadStatusCB)) return false;
@@ -73,23 +98,33 @@ bool GIM6010Driver::ReadStatus() {
   return true;
 }
 
-float GIM6010Driver::GetBusVoltage() {
+
+float GIM6010Driver::GetBusVoltage()
+{
   return busVoltage;
 }
 
-float GIM6010Driver::GetBusCurrent() {
+
+float GIM6010Driver::GetBusCurrent()
+{
   return busCurrent;
 }
 
-int GIM6010Driver::GetTemperature() {
+
+int GIM6010Driver::GetTemperature()
+{
   return currTemperature;
 }
 
-GIM6010Driver::GIM6010Mode GIM6010Driver::GetMode() {
+
+GIM6010Driver::GIM6010Mode GIM6010Driver::GetMode()
+{
   return currMode;
 }
 
-bool GIM6010Driver::ClearFault() {
+
+bool GIM6010Driver::ClearFault()
+{
   uint8_t data[] = { GIM6010Command::CLEAR_FAULT };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ClearFaultCB)) return false;
@@ -97,11 +132,15 @@ bool GIM6010Driver::ClearFault() {
   return true;
 }
 
-GIM6010Driver::GIM6010Error GIM6010Driver::GetError() {
+
+GIM6010Driver::GIM6010Error GIM6010Driver::GetError()
+{
   return currError;
 }
 
-bool GIM6010Driver::RestartDriver() {
+
+bool GIM6010Driver::RestartDriver()
+{
   uint8_t data[] = { GIM6010Command::RESTART_SLAVE, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.WriteCANMessage(sndMsg)) return false;
@@ -109,7 +148,9 @@ bool GIM6010Driver::RestartDriver() {
   return true;
 }
 
-bool GIM6010Driver::ReadPosition() {
+
+bool GIM6010Driver::ReadPosition()
+{
   uint8_t data[] = { GIM6010Command::READ_POSITION };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadPositionCB)) return false;
@@ -117,15 +158,21 @@ bool GIM6010Driver::ReadPosition() {
   return true;
 }
 
-float GIM6010Driver::GetSTPosition() {
+
+float GIM6010Driver::GetSTPosition()
+{
   return currSTPosition;
 }
 
-float GIM6010Driver::GetMTPosition() {
+
+float GIM6010Driver::GetMTPosition()
+{
   return currMTPosition;
 }
 
-bool GIM6010Driver::ReadVelocity() {
+
+bool GIM6010Driver::ReadVelocity()
+{
   uint8_t data[] = { GIM6010Command::READ_VELOCITY };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadVelocityCB)) return false;
@@ -133,11 +180,15 @@ bool GIM6010Driver::ReadVelocity() {
   return true;
 }
 
-float GIM6010Driver::GetVelocity() {
+
+float GIM6010Driver::GetVelocity()
+{
   return currVelocity;
 }
 
-bool GIM6010Driver::ReadCurrent() {
+
+bool GIM6010Driver::ReadCurrent()
+{
   uint8_t data[] = { GIM6010Command::READ_CURRENT };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::ReadCurrentCB)) return false;
@@ -145,15 +196,21 @@ bool GIM6010Driver::ReadCurrent() {
   return true;
 }
 
-float GIM6010Driver::GetCurrent() {
+
+float GIM6010Driver::GetCurrent()
+{
   return currCurrent;
 }
 
-float GIM6010Driver::GetTorque() {
+
+float GIM6010Driver::GetTorque()
+{
   return currTorque;
 }
 
-bool GIM6010Driver::SetOrigin() {
+
+bool GIM6010Driver::SetOrigin()
+{
   uint8_t data[] = { GIM6010Command::SET_ORIGIN };
   CanMsg sndMsg(canID, sizeof(data), data);
   if (!canManager.EnqueueCANMessage(sndMsg, this, &GIM6010Driver::SetOriginCB)) return false;
@@ -161,9 +218,12 @@ bool GIM6010Driver::SetOrigin() {
   return true;
 }
 
-float GIM6010Driver::GetOffset() {
+
+float GIM6010Driver::GetOffset()
+{
   return mechOffset;
 }
+
 
 bool GIM6010Driver::SetPosMaxSpeed(float maxSpeed)  // rad/s
 {
@@ -177,6 +237,7 @@ bool GIM6010Driver::SetPosMaxSpeed(float maxSpeed)  // rad/s
   return true;
 }
 
+
 bool GIM6010Driver::SetVelMaxAcceleration(float maxAcceleration) // rad/s^2
 {
   uint8_t data[5];
@@ -188,6 +249,7 @@ bool GIM6010Driver::SetVelMaxAcceleration(float maxAcceleration) // rad/s^2
 
   return true;
 }
+
 
 bool GIM6010Driver::SetPosVelMaxCurrent(float maxCurrent) // A
 {
@@ -201,11 +263,13 @@ bool GIM6010Driver::SetPosVelMaxCurrent(float maxCurrent) // A
   return true;
 }
 
+
 bool GIM6010Driver::SetPosVelMaxTorque(float maxTorque) // Nm
 {
   if(!SetPosVelMaxCurrent(maxTorque/torqueConstant)) return false;
   return true;
 }
+
 
 bool GIM6010Driver::SetQMaxDCurrent(float maxDCurrent) // A/s
 {
@@ -218,6 +282,7 @@ bool GIM6010Driver::SetQMaxDCurrent(float maxDCurrent) // A/s
 
   return true;
 }
+
 
 bool GIM6010Driver::SetQMaxDTorque(float maxDTorque) // Nm/s
 {
@@ -237,6 +302,7 @@ bool GIM6010Driver::SetPosKp(float posKp)
   return true;
 }
 
+
 bool GIM6010Driver::ReadPosKp()
 {
   uint8_t data[] = {GIM6010Command::SET_POSKP};
@@ -246,10 +312,12 @@ bool GIM6010Driver::ReadPosKp()
   return true;
 }
 
+
 float GIM6010Driver::GetPosKp()
 {
   return posKp;
 }
+
 
 bool GIM6010Driver::SetPosKi(float posKi)
 {
@@ -262,6 +330,7 @@ bool GIM6010Driver::SetPosKi(float posKi)
   return true;
 }
 
+
 bool GIM6010Driver::ReadPosKi()
 {
   uint8_t data[] = {GIM6010Command::SET_POSKI};
@@ -271,10 +340,12 @@ bool GIM6010Driver::ReadPosKi()
   return true;
 }
 
+
 float GIM6010Driver::GetPosKi()
 {
   return posKi;
 }
+
 
 bool GIM6010Driver::SetVelKp(float velKp)
 {
@@ -287,6 +358,7 @@ bool GIM6010Driver::SetVelKp(float velKp)
   return true;
 }
 
+
 bool GIM6010Driver::ReadVelKp()
 {
   uint8_t data[] = {GIM6010Command::SET_VELKP};
@@ -296,10 +368,12 @@ bool GIM6010Driver::ReadVelKp()
   return true;
 }
 
+
 float GIM6010Driver::GetVelKp()
 {
   return velKp;
 }
+
 
 bool GIM6010Driver::SetVelKi(float velKi)
 {
@@ -312,6 +386,7 @@ bool GIM6010Driver::SetVelKi(float velKi)
   return true;
 }
 
+
 bool GIM6010Driver::ReadVelKi()
 {
   uint8_t data[] = {GIM6010Command::SET_VELKI};
@@ -321,10 +396,12 @@ bool GIM6010Driver::ReadVelKi()
   return true;
 }
 
+
 float GIM6010Driver::GetVelKi()
 {
   return velKi;
 }
+
 
 bool GIM6010Driver::SetCurrentTarget(float currentTarget) // A
 {
@@ -338,11 +415,13 @@ bool GIM6010Driver::SetCurrentTarget(float currentTarget) // A
   return true;
 }
 
+
 bool GIM6010Driver::SetTorqueTarget(float torqueTarget) // Nm
 {
   if (!SetCurrentTarget(torqueTarget/torqueConstant)) return false;
   return true;
 }
+
 
 bool GIM6010Driver::SetSpeedTarget(float speedTarget) // rad/s
 {
@@ -356,10 +435,11 @@ bool GIM6010Driver::SetSpeedTarget(float speedTarget) // rad/s
   return true;
 }
 
+
 bool GIM6010Driver::SetAbsolutePositionTarget(float absolutePositionTarget) // rad
 {
   uint8_t data[5];
-  int32_t apT = absolutePositionTarget * cpr / (2 * PI);  // rad;
+  int32_t apT = absolutePositionTarget * PRIMARY_ENCODER_CPR / (2 * PI);  // rad;
   data[0] = GIM6010Command::ABSPOS_CTRL;
   CANUtils::ComposeS32LE(data, 1, apT);
   CanMsg sndMsg(canID, sizeof(data), data);
@@ -368,10 +448,11 @@ bool GIM6010Driver::SetAbsolutePositionTarget(float absolutePositionTarget) // r
   return true;
 }
 
+
 bool GIM6010Driver::SetRelativePositionTarget(float relativePositionTarget) // rad
 {
   uint8_t data[5];
-  int32_t rpT = relativePositionTarget * cpr / (2 * PI);  // rad;
+  int32_t rpT = relativePositionTarget * PRIMARY_ENCODER_CPR / (2 * PI);  // rad;
   data[0] = GIM6010Command::RELPOS_CTRL;
   CANUtils::ComposeS32LE(data, 1, rpT);
   CanMsg sndMsg(canID, sizeof(data), data);
@@ -379,6 +460,7 @@ bool GIM6010Driver::SetRelativePositionTarget(float relativePositionTarget) // r
 
   return true;
 }
+
 
 bool GIM6010Driver::GoHomeByShortest()
 {
@@ -388,6 +470,7 @@ bool GIM6010Driver::GoHomeByShortest()
 
   return true;
 }
+
 
 bool GIM6010Driver::MotorOff()
 {
@@ -402,82 +485,113 @@ bool GIM6010Driver::MotorOff()
 // ---------------------- CALLBACKS --------------------
 // -----------------------------------------------------
 
-void GIM6010Driver::ReadVersionsCB(void* context, const CanMsg& msg) {
+void GIM6010Driver::ReadVersionsCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadVersions(msg);
 }
 
-void GIM6010Driver::ReadInfosCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ReadInfosCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadInfos(msg);
 }
 
-void GIM6010Driver::ReadStatusCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ReadStatusCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadStatus(msg);
 }
 
-void GIM6010Driver::ReadPositionCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ReadPositionCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadPosition(msg);
 }
 
-void GIM6010Driver::ReadVelocityCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ReadVelocityCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadVelocity(msg);
 }
 
-void GIM6010Driver::ReadCurrentCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ReadCurrentCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnReadCurrent(msg);
 }
 
-void GIM6010Driver::ClearFaultCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::ClearFaultCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnClearFault(msg);
 }
 
-void GIM6010Driver::SetOriginCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetOriginCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetOrigin(msg);
 }
 
-void GIM6010Driver::SetPosMaxSpeedCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetPosMaxSpeedCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetPosMaxSpeed(msg);
 }
 
-void GIM6010Driver::SetVelMaxAccelerationCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetVelMaxAccelerationCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetVelMaxAcceleration(msg);
 }
 
-void GIM6010Driver::SetPosVelMaxCurrentCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetPosVelMaxCurrentCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetPosVelMaxCurrent(msg);
 }
 
-void GIM6010Driver::SetQMaxDCurrentCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetQMaxDCurrentCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetQMaxDCurrent(msg);
 }
 
-void GIM6010Driver::SetPosKpCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetPosKpCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetPosKp(msg);
 }
 
-void GIM6010Driver::SetPosKiCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetPosKiCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetPosKi(msg);
 }
 
-void GIM6010Driver::SetVelKpCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetVelKpCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetVelKp(msg);
 }
 
-void GIM6010Driver::SetVelKiCB(void* context, const CanMsg& msg) {
+
+void GIM6010Driver::SetVelKiCB(void* context, const CanMsg& msg)
+{
   auto* self = static_cast<GIM6010Driver*>(context);
   self->OnSetVelKi(msg);
 }
@@ -486,20 +600,25 @@ void GIM6010Driver::SetVelKiCB(void* context, const CanMsg& msg) {
 // ---------------------- PRIVATE ----------------------
 // -----------------------------------------------------
 
-void GIM6010Driver::OnReadVersions(const CanMsg& msg) {
+void GIM6010Driver::OnReadVersions(const CanMsg& msg)
+{
   bootVersion = CANUtils::ParseU16LE(msg.data, 1);
   SWVersion = CANUtils::ParseU16LE(msg.data, 3);
   HWVersion = CANUtils::ParseU16LE(msg.data, 5);
   CANVersion = msg.data[7];
 }
 
-void GIM6010Driver::OnReadInfos(const CanMsg& msg) {
+
+void GIM6010Driver::OnReadInfos(const CanMsg& msg)
+{
   polePairs = msg.data[1];
   torqueConstant = CANUtils::ParseFloatLE(msg.data, 2);  // Nm/A
   reductionRatio = msg.data[6];
 }
 
-void GIM6010Driver::OnReadStatus(const CanMsg& msg) {
+
+void GIM6010Driver::OnReadStatus(const CanMsg& msg)
+{
   busVoltage = CANUtils::ParseU16LE(msg.data, 1) * 0.01;  // V
   busCurrent = CANUtils::ParseU16LE(msg.data, 3) * 0.01;  // A
   currTemperature = msg.data[5];
@@ -507,58 +626,82 @@ void GIM6010Driver::OnReadStatus(const CanMsg& msg) {
   currError = (GIM6010Error)msg.data[7];
 }
 
-void GIM6010Driver::OnReadPosition(const CanMsg& msg) {
-  currSTPosition = CANUtils::ParseU16LE(msg.data, 1) * (2 * PI) / cpr;  // rad
-  currMTPosition = CANUtils::ParseS32LE(msg.data, 3) * (2 * PI) / cpr;  // rad
+
+void GIM6010Driver::OnReadPosition(const CanMsg& msg)
+{
+  currSTPosition = CANUtils::ParseU16LE(msg.data, 1) * (2 * PI) / PRIMARY_ENCODER_CPR;  // rad
+  currMTPosition = CANUtils::ParseS32LE(msg.data, 3) * (2 * PI) / PRIMARY_ENCODER_CPR;  // rad
 }
 
-void GIM6010Driver::OnReadVelocity(const CanMsg& msg) {
+
+void GIM6010Driver::OnReadVelocity(const CanMsg& msg)
+{
   currVelocity = CANUtils::ParseS32LE(msg.data, 1) * 0.01 * (2 * PI) / 60.0;  // rad/s
 }
 
-void GIM6010Driver::OnReadCurrent(const CanMsg& msg) {
+
+void GIM6010Driver::OnReadCurrent(const CanMsg& msg)
+{
   currCurrent = CANUtils::ParseS32LE(msg.data, 1) * 0.001;  // A
   currTorque = currCurrent * torqueConstant;                // Nm
 }
 
-void GIM6010Driver::OnClearFault(const CanMsg& msg) {
+
+void GIM6010Driver::OnClearFault(const CanMsg& msg)
+{
   currError = (GIM6010Error)msg.data[1];
 }
 
-void GIM6010Driver::OnSetOrigin(const CanMsg& msg) {
-  mechOffset = CANUtils::ParseU16LE(msg.data, 1) * (2 * PI) / cpr;  // rad
+
+void GIM6010Driver::OnSetOrigin(const CanMsg& msg)
+{
+  mechOffset = CANUtils::ParseU16LE(msg.data, 1) * (2 * PI) / PRIMARY_ENCODER_CPR;  // rad
 }
 
-void GIM6010Driver::OnSetPosMaxSpeed(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetPosMaxSpeed(const CanMsg& msg)
+{
   posMaxSpeed = CANUtils::ParseU32LE(msg.data, 1) * (2 * PI) / (60.0 * 100.0);  // rad/s
 }
 
-void GIM6010Driver::OnSetVelMaxAcceleration(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetVelMaxAcceleration(const CanMsg& msg)
+{
   velMaxAcceleration = CANUtils::ParseU32LE(msg.data, 1) * (2 * PI) / (60.0 * 100.0);  // rad/s^2
 }
 
-void GIM6010Driver::OnSetPosVelMaxCurrent(const CanMsg& msg) {
+void GIM6010Driver::OnSetPosVelMaxCurrent(const CanMsg& msg)
+{
   posVelMaxCurrent = CANUtils::ParseU32LE(msg.data, 1) / 1000.0;;  // A
   posVelMaxTorque = posVelMaxCurrent * torqueConstant;
 }
 
-void GIM6010Driver::OnSetQMaxDCurrent(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetQMaxDCurrent(const CanMsg& msg)
+{
   qMaxDCurrent = CANUtils::ParseU32LE(msg.data, 1) / 1000.0;;  // A
   qMaxDTorque = qMaxDCurrent * torqueConstant;
 }
 
-void GIM6010Driver::OnSetPosKp(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetPosKp(const CanMsg& msg)
+{
   posKp = CANUtils::ParseFloatLE(msg.data, 1);
 }
 
-void GIM6010Driver::OnSetPosKi(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetPosKi(const CanMsg& msg)
+{
   posKi = CANUtils::ParseFloatLE(msg.data, 1);
 }
 
-void GIM6010Driver::OnSetVelKp(const CanMsg& msg) {
+
+void GIM6010Driver::OnSetVelKp(const CanMsg& msg)
+{
   velKp = CANUtils::ParseFloatLE(msg.data, 1);
 }
 
-void GIM6010Driver::OnSetVelKi(const CanMsg& msg) {
+void GIM6010Driver::OnSetVelKi(const CanMsg& msg)
+{
   velKi = CANUtils::ParseFloatLE(msg.data, 1);
 }

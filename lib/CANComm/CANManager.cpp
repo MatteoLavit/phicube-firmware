@@ -6,13 +6,15 @@
 
 CANManager::CANManager() :
   queueHead(0),
-  queueTail(0) {}
+  queueTail(0)
+{
+  CAN.begin(CanBitRate::BR_1000k);
+}
 
 
 bool CANManager::EnqueueCANMessage(CanMsg msg, void* context, CANResponseCB cb)
 {
   if (IsQueueFull()) {
-    //Serial.println("Queue full");
     return false;
   }
 
@@ -74,17 +76,9 @@ void CANManager::HandleNext(const CanMsg& msg)
   CanCommand& cmd = queue[queueHead];
   if (msg.data[0] == cmd.msg.data[0]) {
     if (cmd.callback) cmd.callback(cmd.context, msg);
-    // else {
-    //   Serial.print("Unhandled response: ");
-    //   Serial.println(msg);
-    // }
     queueHead = (queueHead+1) % CANCOMM_QUEUE_SIZE;
     SendNext();
   }
-  // else {
-  //   Serial.print("Unqueued response: ");
-  //   Serial.println(msg);
-  // }
 }
 
 bool CANManager::SendNext()
