@@ -10,20 +10,13 @@ GIM6010Driver::GIM6010Driver(const uint32_t id, CANManager& manager)
     canManager(manager)
     
 {
+  bootVersion = -1;
+  polePairs = -1;
+  posKp = -1;
+  posKi = -1;
+  velKp = -1;
+  velKi = -1;
   currError = GIM6010Error::NO_ERROR;
-}
-
-
-bool GIM6010Driver::Init()
-{
-  if (!ReadVersions()) return false;
-  if (!ReadInfos()) return false;
-  if (!ReadPosKp()) return false;
-  if (!ReadPosKi()) return false;
-  if (!ReadVelKp()) return false;
-  if (!ReadVelKi()) return false;
-
-  return true;
 }
 
 
@@ -143,7 +136,7 @@ bool GIM6010Driver::RestartDriver()
 {
   uint8_t data[] = { GIM6010Command::RESTART_SLAVE, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF };
   CanMsg sndMsg(canID, sizeof(data), data);
-  if (!canManager.WriteCANMessage(sndMsg)) return false;
+  if (!canManager.EnqueueCANMessage(sndMsg, this, NULL)) return false;
 
   return true;
 }

@@ -16,6 +16,8 @@
 #include "CANManager.h"
 #include "PhicubeConfiguration.h"
 
+#include <phicube_msgs/msg/gim6010_info.h>
+
 
 class PhicubeRobot
 {
@@ -23,14 +25,26 @@ class PhicubeRobot
 
         PhicubeRobot();
 
-        void Init();
+        bool InitManager();
+        bool InitMotors();
+        void UpdateCANComm();
         void UpdateRobotCtrl();
 
-        void GetCurrentPosition(float(&pos)[2]);
-        void GetCurrentVelocity(float(&vel)[2]);
-        void GetCurrentEffort(float(&eff)[2]);
+        void GetMotorsPosition(float(&pos)[2]);
+        void GetMotorsVelocity(float(&vel)[2]);
+        void GetMotorsTorque(float(&trq)[2]);
+        void GetMotorsCurrent(float(&cur)[2]);
+        void GetMotorsInfo(phicube_msgs__msg__GIM6010Info(&inf)[2]);
+
+        bool IsSystemReady();
+        bool MotorsHome(bool hM1, bool hM2);
+        bool MotorsOff(bool oM1, bool oM2);
 
     private:
+
+        bool managerInitialized;
+        bool motorsInitialized;
+        bool systemReady;
 
         CANManager manager;
         GIM6010Driver driverM1;

@@ -13,9 +13,8 @@ class CANManager
     CANManager();
 
     bool EnqueueCANMessage(CanMsg msg, void* context, CANResponseCB cb);
-    bool WriteCANMessage(CanMsg msg);
-    bool IsQueueEmpty() const;
-    bool IsQueueFull() const;
+
+    bool Init();
     void Update();
 
   private:
@@ -24,16 +23,23 @@ class CANManager
       CanMsg msg;
       void* context;
       CANResponseCB callback;
-      uint8_t retries;
       uint32_t timestamp;
+      bool waitingReply;
     };
 
     CanCommand queue[CANCOMM_QUEUE_SIZE];
     uint8_t queueHead;
     uint8_t queueTail;
 
-    void HandleNext(const CanMsg& msg);
-    bool SendNext();
+    bool IsQueueFull() const;
+    bool IsMatching(const CanCommand& cmd, const CanMsg& msg);
+    bool IsAlreadyPending(uint32_t id, uint8_t opCode);
+
+    void RemoveFromQueue(int idx);
+    void CheckTimeouts();
+
+    void HandleRX();
+    void HandleTX();
 };
 
 #endif

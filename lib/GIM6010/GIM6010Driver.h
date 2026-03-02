@@ -56,8 +56,6 @@ class GIM6010Driver
     };
 
     GIM6010Driver(const uint32_t id, CANManager &manager);
-
-    bool Init();
     
     bool ReadVersions();
     int GetBootVersion();
@@ -120,13 +118,11 @@ class GIM6010Driver
     bool ReadVelKi();
     float GetVelKi();
 
-    //TODO - from here
     bool SetCurrentTarget(float currentTarget); // A
     bool SetTorqueTarget(float torqueTarget); // Nm
     bool SetSpeedTarget(float speedTarget); // rad/s
     bool SetAbsolutePositionTarget(float absolutePositionTarget); // rad
     bool SetRelativePositionTarget(float relativePositionTarget); // rad
-    //TODO - till here
 
     bool GoHomeByShortest();
     bool MotorOff();

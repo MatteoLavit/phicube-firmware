@@ -1,0 +1,11 @@
+#MotorsHome service
+
+#REQUEST
+bool off_m1
+bool off_m2
+
+---
+
+#RESPONSE
+bool success
+string message
