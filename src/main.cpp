@@ -22,13 +22,24 @@ using namespace rtos::Kernel;
 using namespace std::chrono_literals;
 
 
+Thread CANCommThread;
 Thread RobotCtrlThread;
-Thread RobotStateThread;
-Thread MotorsStateThread;
+Thread ROSCommThread;
 
 PhicubeRobot phicubeRobot;
 PhicubeCommunication phicubeCommunication;
 
+
+void CANCommThreadCB()
+{
+  Clock::time_point tp = Clock::now();
+
+  while (1) {
+    tp += Clock::duration(PHICUBE_CANCOMM_PERIOD_MS);
+    ThisThread::sleep_until(tp);
+    phicubeRobot.UpdateCANComm();
+  }
+}
 
 void RobotCtrlThreadCB()
 {
@@ -41,36 +52,27 @@ void RobotCtrlThreadCB()
   }
 }
 
-void RobotStateThreadCB()
+void ROSCommThreadCB()
 {
   Clock::time_point tp = Clock::now();
 
   while (1) {
-    tp += Clock::duration(PHICUBE_ROBOTSTATE_PERIOD_MS);
+    tp += Clock::duration(PHICUBE_ROSCOMM_PERIOD_MS);
     ThisThread::sleep_until(tp);
-    phicubeCommunication.UpdateRobotState();
-  }
-}
-
-void MotorsStateThreadCB()
-{
-  Clock::time_point tp = Clock::now();
-
-  while (1) {
-    tp += Clock::duration(PHICUBE_MOTORSTATE_PERIOD_MS);
-    ThisThread::sleep_until(tp);
-    phicubeCommunication.UpdateMotorsState();
+    phicubeCommunication.UpdateROSComm();
   }
 }
 
 void setup()
 { 
-  phicubeRobot.Init();
   phicubeCommunication.Init(phicubeRobot);
-  
+  ROSCommThread.start(ROSCommThreadCB);
+
+  while (!phicubeRobot.InitManager()) delay(200);
+  CANCommThread.start(CANCommThreadCB);
+
+  while (!phicubeRobot.InitMotors()) delay(200);
   RobotCtrlThread.start(RobotCtrlThreadCB);
-  RobotStateThread.start(RobotStateThreadCB);
-  MotorsStateThread.start(MotorsStateThreadCB);
 }
 
 void loop() {}
